@@ -12,9 +12,11 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -36,8 +38,11 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 @Configuration
 public class SecurityConfig {
 
+    @Autowired
+    private Environment env;
+
     @Bean // <1>
-    @Order(1)
+    @Order
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
@@ -55,7 +60,7 @@ public class SecurityConfig {
     }
 
     @Bean // <2>
-    @Order(2)
+    @Order
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         // @formatter:off
@@ -94,8 +99,8 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
-                .redirectUri("http://127.0.0.1:8080/authorized")
+                .redirectUri(env.getProperty("lb_users_uri") + "/login/oauth2/code/msvc-users-client")
+                .redirectUri(env.getProperty("lb_users_uri") + "/authorized")
                 .scope(OidcScopes.OPENID)
                 .scope("message.read")
                 .scope("message.write")
