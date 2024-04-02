@@ -80,8 +80,8 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         // @formatter:off
         UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
+                .username("admin")
+                .password("12345")
                 .roles("USER")
                 .build();
         // @formatter:on
@@ -94,16 +94,16 @@ public class SecurityConfig {
         // @formatter:off
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("users-client")
-                .clientSecret("{noop}secret")
+                .clientSecret("{noop}12345")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri(env.getProperty("lb_users_uri") + "/login/oauth2/code/msvc-users-client")
-                .redirectUri(env.getProperty("lb_users_uri") + "/authorized")
+                .redirectUri(env.getProperty("LB_USERS_URI") + "/login/oauth2/code/msvc-users-client")
+                .redirectUri(env.getProperty("LB_USERS_URI") + "/authorized")
                 .scope(OidcScopes.OPENID)
-                .scope("message.read")
-                .scope("message.write")
+                .scope("read")
+                .scope("write")
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
         // @formatter:on
