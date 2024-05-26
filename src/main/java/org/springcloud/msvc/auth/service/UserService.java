@@ -17,16 +17,16 @@ import java.util.Collections;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private WebClient webClient;
+    private WebClient.Builder webClient;
 
     private Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-            org.springcloud.msvc.auth.model.users.User user = webClient.get()
+            org.springcloud.msvc.auth.model.users.User user = webClient.build().get()
                     .uri(
-                            "http://msvc-users:8001/login",
+                            "http://users-service:8001/login",
                             uri -> uri.queryParam("email", email).build()
                     )
                     .retrieve()
